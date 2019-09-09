@@ -23,8 +23,7 @@
 // "claim" a unique product ID for your device.  It could be something as simple as as your email
 // address in reverse, such as "com.gmail.smith.lisa.test-device" or "com.outlook.gates.bill.demo"
 
-//#define myProductID "org.coca-cola.soda.vending-machine.v2"
-#define myProductID "com.blues.test" // OZZIE
+#define myProductID "org.coca-cola.soda.vending-machine.v2"
 
 // One-time initialization
 void setup() {
@@ -41,8 +40,7 @@ void setup() {
 	// This command (optional) command causes the Notecard to immediately establish a session with
 	// the service at notehub.io, and to keep it active continuously.  By default, without this, the
 	// Notecard will connect periodically (hourly) with the service if any data is pending to be uploaded.
-//	JAddStringToObject(req, "mode", "continuous");
-	JAddStringToObject(req, "mode", "off"); // OZZIE
+	JAddStringToObject(req, "mode", "continuous");
 
 	// Issue the request, telling the Notecard how and how often to access the service.
 	// This results in a JSON message to Notecard formatted like:
@@ -103,7 +101,6 @@ void loop() {
 	}
 
 	// Delay between measurements
-// OZZIE
-//	delay(15000);
+	delay(15000);
 
 }

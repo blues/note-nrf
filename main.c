@@ -1,3 +1,6 @@
+// Copyright 2018 Inca Roads LLC.  All rights reserved.
+// Use of this source code is governed by licenses granted by the
+// copyright holder including that found in the LICENSE file.
 
 #include "main.h"
 #include "nrf.h"
@@ -61,9 +64,8 @@ APP_TIMER_DEF(timerAppTick);
 void timerAppTickHandler(void *context);
 
 // Data used for Notecard I/O functions
-static bool serialReceivedCharAvailable = false;
-static char serialReceivedChar;
-static volatile bool m_xfer_done = false;
+static size_t serialAvailable = 0;
+static char serialBuffer;
 
 // Forwards
 void noteSerialReset(void);
@@ -74,13 +76,12 @@ void noteI2CReset(void);
 size_t noteDebugSerialOutput(const char *message);
 const char *noteI2CTransmit(uint16_t DevAddress, uint8_t* pBuffer, uint16_t Size);
 const char *noteI2CReceive(uint16_t DevAddress, uint8_t* pBuffer, uint16_t Size, uint32_t *avail);
-void twi_handler(nrf_drv_twi_evt_t const * p_event, void * p_context);
 
 // Main entry point
 int main(void) {
 
-	// Configure board support package used in this example
-//	bsp_board_init(BSP_INIT_LEDS|BSP_INIT_BUTTONS);
+	// Optionally configure board support package in case we'd like to use it
+	bsp_board_init(BSP_INIT_LEDS|BSP_INIT_BUTTONS);
 
 	// Initialize peripherals including the millisecond clock used for detecting I/O timeouts
 	nrf_drv_clock_init();
@@ -134,22 +135,21 @@ void noteSerialTransmit(uint8_t *text, size_t len, bool flush) {
 		nrf_serial_flush(&serial_uart, 0);
 }
 
-// Serial "is anything available" function
+// Serial "is anything available" function, which does a read-ahead for data into a serial buffer
 bool noteSerialAvailable() {
-	if (!serialReceivedCharAvailable)
-		if (nrf_serial_read(&serial_uart, &serialReceivedChar, 1, NULL, 1) == NRF_SUCCESS)
-			serialReceivedCharAvailable = true;
-	return serialReceivedCharAvailable;
+	if (!serialAvailable) {
+		ret_code_t err_code = nrf_serial_read(&serial_uart, &serialBuffer, sizeof(serialBuffer), &serialAvailable, 5);
+		if (err_code != NRF_SUCCESS && err_code != NRF_ERROR_TIMEOUT)
+			serialAvailable = 0;
+	}
+	return serialAvailable != 0;
 }
 
 // Blocking serial read a byte function (generally only called if known to be available)
 char noteSerialReceive() {
-	if (serialReceivedCharAvailable) {
-		serialReceivedCharAvailable = false;
-	} else {
-		while (nrf_serial_read(&serial_uart, &serialReceivedChar, 1, NULL, 1000) != NRF_SUCCESS) ;
-	}
-	return serialReceivedChar;
+	while (!noteSerialAvailable()) ;
+	serialAvailable = 0;
+	return serialBuffer;
 }
 
 // I2C reset procedure, called before any I/O and called again upon I/O error
@@ -159,7 +159,7 @@ void noteI2CReset() {
 		first = false;
 	else
 		nrfx_twi_uninit(&m_twi.u.twi);
-	nrf_drv_twi_init(&m_twi, &twi_config, twi_handler, NULL);
+	nrf_drv_twi_init(&m_twi, &twi_config, NULL, NULL);
 	nrf_drv_twi_enable(&m_twi);
 }
 
@@ -175,13 +175,10 @@ const char *noteI2CTransmit(uint16_t DevAddress, uint8_t* pBuffer, uint16_t Size
 	} else {
 		writebuf[0] = Size;
 		memcpy(&writebuf[1], pBuffer, Size);
-		m_xfer_done = false;
-	    ret_code_t err_code = nrf_drv_twi_tx(&m_twi, DevAddress, writebuf, writelen, false);
+		ret_code_t err_code = nrf_drv_twi_tx(&m_twi, DevAddress, writebuf, writelen, false);
 		free(writebuf);
 		if (err_code != NRF_SUCCESS) {
 			errstr = "i2c: write error";
-		} else {
-		    while (m_xfer_done == false);
 		}
 	}
 	return errstr;
@@ -191,16 +188,14 @@ const char *noteI2CTransmit(uint16_t DevAddress, uint8_t* pBuffer, uint16_t Size
 const char *noteI2CReceive(uint16_t DevAddress, uint8_t* pBuffer, uint16_t Size, uint32_t *available) {
 	const char *errstr = NULL;
 	ret_code_t err_code;
-	
+
 	// Retry transmit errors several times, because it's harmless to do so
 	for (int i=0; i<3; i++) {
 		uint8_t hdr[2];
 		hdr[0] = (uint8_t) 0;
 		hdr[1] = (uint8_t) Size;
-		m_xfer_done = false;
 		err_code = nrf_drv_twi_tx(&m_twi, DevAddress, hdr, sizeof(hdr), false);
 		if (err_code == NRF_SUCCESS) {
-		    while (m_xfer_done == false);
 			errstr = NULL;
 			break;
 		}
@@ -215,12 +210,10 @@ const char *noteI2CReceive(uint16_t DevAddress, uint8_t* pBuffer, uint16_t Size,
 		if (readbuf == NULL) {
 			errstr = "i2c: insufficient memory (read)";
 		} else {
-		    m_xfer_done = false;
 			err_code = nrf_drv_twi_rx(&m_twi, DevAddress, readbuf, readlen);
 			if (err_code != NRF_SUCCESS) {
 				errstr = "i2c: read error";
 			} else {
-			    while (m_xfer_done == false);
 				uint8_t availbyte = readbuf[0];
 				uint8_t goodbyte = readbuf[1];
 				if (goodbyte != Size) {
@@ -261,20 +254,9 @@ long unsigned int millis() {
 	return (long unsigned int) appClock;
 }
 
-// If there's a place to do it, display debug output
+// On SES (Crossworks), it's possible to do SWD debug output using this debug_printf call.
 #ifdef USING_SES
 size_t noteDebugSerialOutput(const char *message) {
 	debug_printf(message);
 }
 #endif
-
-// I2C event handler
-void twi_handler(nrf_drv_twi_evt_t const * p_event, void * p_context) {
-    switch (p_event->type) {
-        case NRF_DRV_TWI_EVT_DONE:
-            m_xfer_done = true;
-            break;
-        default:
-            break;
-    }
-}
