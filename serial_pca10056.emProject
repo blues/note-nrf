@@ -1,0 +1,117 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="main" target="8" version="2">
+  <project Name="main">
+    <configuration
+      Name="Common"
+      arm_architecture="v7EM"
+      arm_core_type="Cortex-M4"
+      arm_endian="Little"
+      arm_fp_abi="Hard"
+      arm_fpu_type="FPv4-SP-D16"
+      arm_linker_heap_size="8192"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="8192"
+      arm_linker_treat_warnings_as_errors="No"
+      arm_simulator_memory_simulation_parameter="RWX 00000000,00100000,FFFFFFFF;RWX 20000000,00010000,CDCDCDCD"
+      arm_target_device_name="nRF52840_xxAA"
+      arm_target_interface_type="SWD"
+      c_preprocessor_definitions="BOARD_CUSTOM;USING_SES;CONFIG_GPIO_AS_PINRESET;DEBUG;DEBUG_NRF;FLOAT_ABI_HARD;INITIALIZE_USER_SECTIONS;NO_VTOR_CONFIG;NRF52840_XXAA;SWI_DISABLE0;"
+      c_user_include_directories=".;../note-c;../sdk-current/components;../sdk-current/components/boards;../sdk-current/components/drivers_nrf/nrf_soc_nosd;../sdk-current/components/libraries/atomic;../sdk-current/components/libraries/balloc;../sdk-current/components/libraries/bsp;../sdk-current/components/libraries/button;../sdk-current/components/libraries/delay;../sdk-current/components/libraries/experimental_section_vars;../sdk-current/components/libraries/hardfault;../sdk-current/components/libraries/hardfault/nrf52;../sdk-current/components/libraries/log;../sdk-current/components/libraries/log/src;../sdk-current/components/libraries/memobj;../sdk-current/components/libraries/mutex;../sdk-current/components/libraries/queue;../sdk-current/components/libraries/ringbuf;../sdk-current/components/libraries/scheduler;../sdk-current/components/libraries/serial;../sdk-current/components/libraries/strerror;../sdk-current/components/libraries/timer;../sdk-current/components/libraries/util;../sdk-current/components/toolchain/cmsis/include;../../..;../sdk-current/external/fprintf;../sdk-current/integration/nrfx;../sdk-current/integration/nrfx/legacy;../sdk-current/modules/nrfx;../sdk-current/modules/nrfx/drivers/include;../sdk-current/modules/nrfx/hal;../sdk-current/modules/nrfx/mdk;../config;"
+      debug_register_definition_file="../sdk-current/modules/nrfx/mdk/nrf52840.svd"
+      debug_start_from_entry_point_symbol="No"
+      debug_target_connection="J-Link"
+      gcc_debugging_level="Level 3"
+      gcc_entry_point="Reset_Handler"
+      linker_output_format="hex"
+      linker_printf_fmt_level="long"
+      linker_printf_width_precision_supported="Yes"
+      linker_scanf_fmt_level="long"
+      linker_section_placement_file="flash_placement.xml"
+      linker_section_placement_macros="FLASH_PH_START=0x0;FLASH_PH_SIZE=0x100000;RAM_PH_START=0x20000000;RAM_PH_SIZE=0x40000;FLASH_START=0x0;FLASH_SIZE=0x100000;RAM_START=0x20000000;RAM_SIZE=0x40000"
+      linker_section_placements_segments="FLASH RX 0x0 0x100000;RAM RWX 0x20000000 0x40000"
+      macros="CMSIS_CONFIG_TOOL=../sdk-current/external_tools/cmsisconfig/CMSIS_Configuration_Wizard.jar"
+      project_directory=""
+      project_type="Executable" />
+    <folder Name="Segger Startup Files">
+      <file file_name="$(StudioDir)/source/thumb_crt0.s" />
+    </folder>
+    <folder Name="nRF_Log">
+      <file file_name="../sdk-current/components/libraries/log/src/nrf_log_frontend.c" />
+      <file file_name="../sdk-current/components/libraries/log/src/nrf_log_str_formatter.c" />
+    </folder>
+    <folder Name="Board Definition">
+      <file file_name="../sdk-current/components/boards/boards.c" />
+    </folder>
+    <folder Name="nRF_Libraries">
+      <file file_name="../sdk-current/components/libraries/button/app_button.c" />
+      <file file_name="../sdk-current/components/libraries/util/app_error.c" />
+      <file file_name="../sdk-current/components/libraries/util/app_error_handler_gcc.c" />
+      <file file_name="../sdk-current/components/libraries/util/app_error_weak.c" />
+      <file file_name="../sdk-current/components/libraries/scheduler/app_scheduler.c" />
+      <file file_name="../sdk-current/components/libraries/timer/app_timer.c" />
+      <file file_name="../sdk-current/components/libraries/util/app_util_platform.c" />
+      <file file_name="../sdk-current/components/libraries/hardfault/nrf52/handler/hardfault_handler_gcc.c" />
+      <file file_name="../sdk-current/components/libraries/hardfault/hardfault_implementation.c" />
+      <file file_name="../sdk-current/components/libraries/util/nrf_assert.c" />
+      <file file_name="../sdk-current/components/libraries/atomic/nrf_atomic.c" />
+      <file file_name="../sdk-current/components/libraries/balloc/nrf_balloc.c" />
+      <file file_name="../sdk-current/external/fprintf/nrf_fprintf.c" />
+      <file file_name="../sdk-current/external/fprintf/nrf_fprintf_format.c" />
+      <file file_name="../sdk-current/components/libraries/memobj/nrf_memobj.c" />
+      <file file_name="../sdk-current/components/libraries/queue/nrf_queue.c" />
+      <file file_name="../sdk-current/components/libraries/ringbuf/nrf_ringbuf.c" />
+      <file file_name="../sdk-current/components/libraries/serial/nrf_serial.c" />
+      <file file_name="../sdk-current/components/libraries/strerror/nrf_strerror.c" />
+    </folder>
+    <folder Name="nRF_Drivers">
+      <file file_name="../sdk-current/integration/nrfx/legacy/nrf_drv_clock.c" />
+      <file file_name="../sdk-current/integration/nrfx/legacy/nrf_drv_power.c" />
+      <file file_name="../sdk-current/integration/nrfx/legacy/nrf_drv_uart.c" />
+      <file file_name="../sdk-current/integration/nrfx/legacy/nrf_drv_twi.c" />
+      <file file_name="../sdk-current/components/drivers_nrf/nrf_soc_nosd/nrf_nvic.c" />
+      <file file_name="../sdk-current/components/drivers_nrf/nrf_soc_nosd/nrf_soc.c" />
+      <file file_name="../sdk-current/modules/nrfx/soc/nrfx_atomic.c" />
+      <file file_name="../sdk-current/modules/nrfx/drivers/src/nrfx_clock.c" />
+      <file file_name="../sdk-current/modules/nrfx/drivers/src/nrfx_gpiote.c" />
+      <file file_name="../sdk-current/modules/nrfx/drivers/src/nrfx_power.c" />
+      <file file_name="../sdk-current/modules/nrfx/drivers/src/nrfx_twi.c" />
+      <file file_name="../sdk-current/modules/nrfx/drivers/src/nrfx_twim.c" />
+      <file file_name="../sdk-current/modules/nrfx/drivers/src/prs/nrfx_prs.c" />
+      <file file_name="../sdk-current/modules/nrfx/drivers/src/nrfx_uart.c" />
+      <file file_name="../sdk-current/modules/nrfx/drivers/src/nrfx_uarte.c" />
+    </folder>
+    <folder Name="Board Support">
+      <file file_name="../sdk-current/components/libraries/bsp/bsp.c" />
+    </folder>
+    <folder Name="Application">
+      <file file_name="./main.c" />
+      <file file_name="example.c" />
+    </folder>
+    <folder Name="None">
+      <file file_name="../sdk-current/modules/nrfx/mdk/ses_startup_nrf52840.s" />
+      <file file_name="../sdk-current/modules/nrfx/mdk/ses_startup_nrf_common.s" />
+      <file file_name="../sdk-current/modules/nrfx/mdk/system_nrf52840.c" />
+    </folder>
+    <folder Name="note-c">
+      <file file_name="../note-c/n_atof.c" />
+      <file file_name="../note-c/n_b64.c" />
+      <file file_name="../note-c/n_cjson_helpers.c" />
+      <file file_name="../note-c/n_cjson.c" />
+      <file file_name="../note-c/n_ftoa.c" />
+      <file file_name="../note-c/n_helpers.c" />
+      <file file_name="../note-c/n_hooks.c" />
+      <file file_name="../note-c/n_i2c.c" />
+      <file file_name="../note-c/n_request.c" />
+      <file file_name="../note-c/n_serial.c" />
+      <file file_name="../note-c/n_str.c" />
+    </folder>
+  </project>
+  <configuration
+    Name="Release"
+    c_preprocessor_definitions="NDEBUG"
+    gcc_optimization_level="Optimize For Size" />
+  <configuration
+    Name="Debug"
+    c_preprocessor_definitions="DEBUG; DEBUG_NRF"
+    gcc_optimization_level="None" />
+</solution>
