@@ -1,4 +1,4 @@
-# note-nrf
+# note-nrf52
 
 This is an example of how to use the Notecard and the [note-c][note-c] library
 with the native Nordic nRF52 SDK.
@@ -13,13 +13,13 @@ organization:
 
 ```
 parent  
-├ note-nrf  
+├ note-nrf52  
 ├ note-c  
 └ sdk-current  
 ```
 
 Where
-- [note-nrf][note-nrf] - The Notecard example for Nordic nRF5x devices.
+- [note-nrf52][note-nrf52] - The Notecard example for Nordic nRF5x devices.
 - [note-c][note-c] - The Notecard SDK for C.
 - [sdk-current][sdk-current] - The latest Nordic nRF5 SDK.
 
@@ -41,7 +41,7 @@ https://www.nordicsemi.com/?sc_itemid=%7BB935528E-8BFA-42D9-8BB5-83E2A5E1FF5C%7D
 This example has been tested with both UART and with I2C, with I2C being observed to be extremely reliable
 and lower power draw than UART.
 
-[note-nrf]: https://github.com/blues/note-nrf
+[note-nrf52]: https://github.com/blues/note-nrf52
 [note-c]: https://github.com/blues/note-c
 [note-arduino]: https://github.com/blues/note-arduino
 [sdk-current]: https://www.nordicsemi.com/Software-and-Tools/Software/nRF5-SDK
