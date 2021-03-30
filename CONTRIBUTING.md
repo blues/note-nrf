@@ -18,7 +18,7 @@ clean up inconsistent whitespace )
 * by closing [issues][]
 * by reviewing patches
 
-[issues]: https://blues.github.com/note-nrf52/issues
+[issues]: https://github.com/blues/note-nrf52/issues
 
 ## Submitting an Issue
 
